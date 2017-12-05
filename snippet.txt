@@ -58,7 +58,41 @@ public class App {
 	}
 }
 
-Then I decide to move this endpoint to a new file called MainController.
+Then I decide to move the method sayHello to a new file called MainController, like the following code.
+
+package edu.ac.gitdebugging.web;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MainController {
+	@RequestMapping("/sayHello")
+	public String sayHello() {
+		return "Hello";
+	}
+}
+
+Now if we use blame with -C option in new class we got:
+
+$ git blame -C src/main/java/edu/ac/gitdebugging/web/MainController.java
+00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200  1) package edu.ac.gitdebugging.web;
+00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200  2)
+62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  3) import org.springframework.web.bind.annotation.RequestMapping;
+62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  4) import org.springframework.web.bind.annotation.RestController;
+62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  5)
+00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200  6) @RestController
+00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200  7) public class MainController {
+62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  8)     @RequestMapping("/sayHello")
+62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  9)     public String sayHello() {
+62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200 10)             return "Hello";
+62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200 11)     }
+^5f1231c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 15:39:16 -0200 12) }
+
+How you can see this class is not commited yet, and we have a new column in result. The new column shows where the code originally comes from.
+
+IDEs like Eclipse and Intellij have a buit-in 'blame' integrated with the code editor. In eclipse, right click in the line number and 'Show revision information'. In Intellij right click in the line number and 'Annotate'.
+
 
 Links
 
