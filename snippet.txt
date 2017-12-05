@@ -1,0 +1,27 @@
+Git Debug tools
+
+Everyone knows Git as a great file versioning tool. But did you know you can also use Git to debug and to help you find bugs in your code?
+
+In this snippet, I'll explain about two tools that helps me a lot and how I use then. The tools are: git blame and git bisect. We can use them in different scenarios and together.
+
+Git blame
+
+Git blame is a well know tool, basically, you can use to check what commit modify certain line of code. In the following example, the tool is used in the README.md file. The first column is the partial commit hash followed by user, date, time, time zone, line number, line content.
+
+$ git blame README.md
+406b2818 (Jonathan 2017-12-05 15:49:16 -0200 1) #Git Debugging
+406b2818 (Jonathan 2017-12-05 15:49:16 -0200 2)
+d44487fe (Jonathan 2017-12-05 15:57:23 -0200 3) This project is part of an article for Avenue Code Snippets.
+d44487fe (Jonathan 2017-12-05 15:57:23 -0200 4)
+d44487fe (Jonathan 2017-12-05 15:57:23 -0200 5) ##Project content
+d44487fe (Jonathan 2017-12-05 15:57:23 -0200 6)
+d44487fe (Jonathan 2017-12-05 15:57:23 -0200 7) Basic Rest based crud with Spring Boot.
+
+
+Links
+
+Git Blame:
+https://git-scm.com/docs/git-blame
+
+The examples are based in following repository:
+https://github.com/JonathanOhara/gitdebugging
