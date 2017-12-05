@@ -6,17 +6,59 @@ In this snippet, I'll explain about two tools that helps me a lot and how I use 
 
 Git blame
 
-Git blame is a well know tool, basically, you can use to check what commit modify certain line of code. In the following example, the tool is used in the README.md file. The first column is the partial commit hash followed by user, date, time, time zone, line number, line content.
+Git blame is a well know tool, basically, you can use to check what commit modify certain line of code. The first column is the partial commit hash followed by user, date, time, time zone, line number, line content.
+
+Let's start with a simple example, In the following example, the tool is used in the README.md file.
 
 $ git blame README.md
 406b2818 (Jonathan 2017-12-05 15:49:16 -0200 1) #Git Debugging
 406b2818 (Jonathan 2017-12-05 15:49:16 -0200 2)
-d44487fe (Jonathan 2017-12-05 15:57:23 -0200 3) This project is part of an article for Avenue Code Snippets.
+06c430e2 (Jonathan 2017-12-05 16:14:49 -0200 3) This project is part of an article made for Avenue Code Snippets.
 d44487fe (Jonathan 2017-12-05 15:57:23 -0200 4)
 d44487fe (Jonathan 2017-12-05 15:57:23 -0200 5) ##Project content
 d44487fe (Jonathan 2017-12-05 15:57:23 -0200 6)
-d44487fe (Jonathan 2017-12-05 15:57:23 -0200 7) Basic Rest based crud with Spring Boot.
+06c430e2 (Jonathan 2017-12-05 16:14:49 -0200 7) Basic Rest based crud with Spring Boot.
 
+In code above we can check 3 different commits (406b2818, 06c430e2, d44487fe), followed by commiter data and finally the line content.
+
+There are a lot of options that you can use with git blame. You can see all git blame options in the official documentation (see section Links).
+
+One important option is [-L <range>]. With this option you can check just some lines of your file. Let's see an example:
+
+$ git blame -L 2,8 README.md
+406b2818 (Jonathan          2017-12-05 15:49:16 -0200 2)
+06c430e2 (Jonathan          2017-12-05 16:14:49 -0200 3) This project is part of an article made for Avenue Code Snippets.
+d44487fe (Jonathan          2017-12-05 15:57:23 -0200 4)
+00000000 (Not Committed Yet 2017-12-05 16:54:00 -0200 5) This is a unstaged change
+00000000 (Not Committed Yet 2017-12-05 16:54:00 -0200 6)
+d44487fe (Jonathan          2017-12-05 15:57:23 -0200 7) ##Project content
+d44487fe (Jonathan          2017-12-05 15:57:23 -0200 8)
+
+In the example we filter the file, starting from line 2 to line 8. Note that 'blame' also shows uncommited changes.
+
+Another interesting option is [-C], especially when you are refactoring a code. Summing up when you use [-C] Git try to find code blocks that was moved from another file. In this piece of code there is a simple endpoint using Java and SpringBoot.
+
+package edu.ac.gitdebugging;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+@RestController
+public class App {
+	public static void main(String[] args) {
+		SpringApplication.run(App.class, args);
+	}
+
+	@RequestMapping("/sayHello")
+	public String sayHello() {
+		return "Hello";
+	}
+}
+
+Then I decide to move this endpoint to a new file called MainController.
 
 Links
 
