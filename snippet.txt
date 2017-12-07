@@ -97,7 +97,7 @@ Git bisect
 
 The first tool shows who, when and what commit make the change in the code. In most of time you don't have idea what is breaking your code, git bisect can be used for this cases. Before giving some usage tips, let's go to the basics.
 
-Git bisect stands for git binary search and. In a nutshell, git bisect find what exactly commit introduced a bug.
+Git bisect stands for git binary search. In a nutshell, git bisect find what exactly commit introduced a bug.
 
 Before show the example, let's get a simple review about binary search.
 
@@ -107,7 +107,9 @@ Imagine that you have ten thousand of commits, and the bug is in the second comm
 
 The main idea of binary search is simple, given a collection of elements (e.g ordered integer array), we go the middle point of the collection, with the middle element we check if is this element that we are searching about; if not, then we need if we go to search in the group of elements right or left of the middle point. With this new groups we keep iterating this steps until we find the element.
 
-Applying to our scenario, Git search trough all commits starting in the middle commit in commits stack. With a commit you need to inform git if in this point the bug still occurs. If the bug was not find, then the git bisect create a group with the commits before that one. It continues searching until it finds the exact commit that introduced the bug.
+Applying to our scenario: Git search trough all commits starting in the middle commit in commits stack, with the middle commit, you need to inform git if in this point the bug still occurs. If the bug was not find, then the git bisect create a group with the commits before that one. It continues searching until it finds the exact commit that introduced the bug.
+
+Let's see the following example:
 
 
 
