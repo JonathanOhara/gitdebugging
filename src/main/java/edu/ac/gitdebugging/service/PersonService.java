@@ -12,6 +12,10 @@ public class PersonService {
 	@Autowired
 	private PersonRepository personRepository;
 	
+	public Person findOne(Long id) {
+		return personRepository.findOne(id);
+	}
+	
 	public Iterable<Person> findAll(){
 		return personRepository.findAll();
 	}
