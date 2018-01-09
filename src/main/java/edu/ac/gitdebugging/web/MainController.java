@@ -1,6 +1,8 @@
 package edu.ac.gitdebugging.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,23 +22,23 @@ public class MainController {
 	private PersonService personService;
 	
 	@GetMapping
-	public Iterable<Person> findAll() {
-		return personService.findAll();
+	public ResponseEntity<Iterable<Person>> findAll() {
+		return new ResponseEntity<Iterable<Person>>( personService.findAll(), HttpStatus.OK );
 	}
 	
 	@PostMapping
-	public Person save(Person person) {
-		return personService.save(person);
+	public ResponseEntity<Person> save(Person person) {
+		return new ResponseEntity<Person>( personService.save(person), HttpStatus.CREATED );
 	}
 	
 	@GetMapping("/{personId}")
-	public Person findOne(@PathVariable("personId") Long id) {
-		return personService.findOne(id);
+	public ResponseEntity<Person> findOne(@PathVariable("personId") Long id) {
+		return new ResponseEntity<Person>( personService.findOne(id), HttpStatus.OK );
 	}
 	
 	@PutMapping("/{personId}")
-	public Person update(@PathVariable("personId") Long id, @RequestBody Person person) {
+	public ResponseEntity<Person> update(@PathVariable("personId") Long id, @RequestBody Person person) {
 		person.setId(id);
-		return personService.save(person);
+		return new ResponseEntity<Person>( personService.save(person), HttpStatus.OK );
 	}
 }
