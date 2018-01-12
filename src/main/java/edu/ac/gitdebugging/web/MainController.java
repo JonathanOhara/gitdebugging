@@ -30,7 +30,7 @@ public class MainController {
 	
 	@PostMapping
 	public ResponseEntity<Person> save(Person person) {
-		return new ResponseEntity<Person>( personService.save(person), HttpStatus.CREATED );
+		return new ResponseEntity<Person>( personService.insert(person), HttpStatus.CREATED );
 	}
 	
 	@GetMapping("/{personId}")
@@ -41,7 +41,7 @@ public class MainController {
 	@PutMapping("/{personId}")
 	public ResponseEntity<Person> update(@PathVariable("personId") Long id, @RequestBody Person person) {
 		person.setId(id);
-		return new ResponseEntity<Person>( personService.save(person), HttpStatus.OK );
+		return new ResponseEntity<Person>( personService.update(person), HttpStatus.OK );
 	}
 	
 	@ExceptionHandler(PersonNotFoundException.class)

@@ -24,10 +24,14 @@ public class PersonService {
 		return personRepository.findAll();
 	}
 	
-	public Person save(Person person){
+	public Person update(Person person){
 		if( findOne(person.getId()) == null )
 			throw new PersonNotFoundException();
 		
+		return personRepository.save(person);
+	}
+	
+	public Person insert(Person person){
 		return personRepository.save(person);
 	}
 }
