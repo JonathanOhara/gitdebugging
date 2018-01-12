@@ -136,8 +136,101 @@ d44487f Adding spring dependencies
 As you can see, the commit that add a bug in the project is the "7f3ce1e Adding a BUG not covered by tests". Now let's run the git bisect:
 
 $ git bisect start
-$ git bisect bad f848
-$ git bisect good 
+$ git bisect bad HEAD
+$ git bisect good e70b
+
+Bisecting: 4 revisions left to test after this (roughly 2 steps)
+[a3132181523726cbc77caebade9e2ae096c3f04e] Get All Persons
+
+$ git log --pretty=oneline --abbrev-commit
+a313218 (HEAD) Get All Persons
+7f3ce1e Adding a BUG not covered by tests
+f2945f7 Bug fix in insert
+e64e564 Refactoring exception Handler
+d07ed1e Person Exist validation
+e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
+7082948 Test base
+9a87bc9 Find One and Update
+cc66f96 Find all and save endpoints
+48476e9 Starting git bisect section
+260722e Refactoring Hello World
+62394f5 Hello World Endpoint
+06c430e Adding snippet
+d44487f Adding spring dependencies
+406b281 Readme basic info
+5f1231c First commit
+
+$ git bisect bad
+Bisecting: 2 revisions left to test after this (roughly 1 step)
+[e64e5646a348da525b17647d3d1e0834f0e4d7bc] Refactoring exception Handler
+
+$ git log --pretty=oneline --abbrev-commit
+e64e564 (HEAD) Refactoring exception Handler
+d07ed1e Person Exist validation
+e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
+7082948 Test base
+9a87bc9 Find One and Update
+cc66f96 Find all and save endpoints
+48476e9 Starting git bisect section
+260722e Refactoring Hello World
+62394f5 Hello World Endpoint
+06c430e Adding snippet
+d44487f Adding spring dependencies
+406b281 Readme basic info
+5f1231c First commit
+
+$ git bisect good
+Bisecting: 0 revisions left to test after this (roughly 1 step)
+[7f3ce1edcb4d3632bfe665d125004465a9d6d8e3] Adding a BUG not covered by tests
+
+$ git log --pretty=oneline --abbrev-commit
+7f3ce1e (HEAD) Adding a BUG not covered by tests
+f2945f7 Bug fix in insert
+e64e564 (refs/bisect/good-e64e5646a348da525b17647d3d1e0834f0e4d7bc) Refactoring exception Handler
+d07ed1e Person Exist validation
+e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
+7082948 Test base
+9a87bc9 Find One and Update
+cc66f96 Find all and save endpoints
+48476e9 Starting git bisect section
+260722e Refactoring Hello World
+62394f5 Hello World Endpoint
+06c430e Adding snippet
+d44487f Adding spring dependencies
+406b281 Readme basic info
+5f1231c First commit
+
+$ git bisect bad
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[f2945f726299f5ce878595d0a1b821e6c09712fc] Bug fix in insert
+
+$ git log --pretty=oneline --abbrev-commit
+f2945f7 (HEAD) Bug fix in insert
+e64e564 (refs/bisect/good-e64e5646a348da525b17647d3d1e0834f0e4d7bc) Refactoring exception Handler
+d07ed1e Person Exist validation
+e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
+7082948 Test base
+9a87bc9 Find One and Update
+cc66f96 Find all and save endpoints
+48476e9 Starting git bisect section
+260722e Refactoring Hello World
+62394f5 Hello World Endpoint
+06c430e Adding snippet
+d44487f Adding spring dependencies
+406b281 Readme basic info
+5f1231c First commit
+
+$ git bisect good
+7f3ce1edcb4d3632bfe665d125004465a9d6d8e3 is the first bad commit
+commit 7f3ce1edcb4d3632bfe665d125004465a9d6d8e3
+Author: Jonathan <jaraujo@avenuecode.com>
+Date:   Fri Jan 12 14:40:00 2018 -0200
+
+    Adding a BUG not covered by tests
+
+:040000 040000 0f61c1015071199f167b1ddaee632f2368c9b99b b0e10337999203236d17756897a7f8fe071d3237 M	src
+
+$ git bisect reset
 
 
 Links
