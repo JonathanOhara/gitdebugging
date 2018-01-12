@@ -3,6 +3,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -89,6 +90,14 @@ public class MainControllerTest {
 		
 			andExpect(status().isOk()).
 			andExpect( jsonPath("$.id").isNumber() ).
+			andReturn();
+	}
+	
+	@Test public void 
+	shouldDeletePersonWhenDelete ()
+		throws Exception{
+		mockMvc.perform(delete("/persons/2")).
+			andExpect(status().isOk()).
 			andReturn();
 	}
 	

@@ -39,4 +39,10 @@ public class PersonService {
 		return personRepository.count();
 	}
 	
+	public void delete(Long id){
+		if( findOne( id ) == null )
+			throw new PersonNotFoundException();
+		personRepository.delete(id);
+	}
+	
 }
