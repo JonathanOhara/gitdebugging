@@ -34,4 +34,9 @@ public class PersonService {
 	public Person insert(Person person){
 		return personRepository.save(person);
 	}
+	
+	public long count(){
+		return personRepository.count();
+	}
+	
 }
