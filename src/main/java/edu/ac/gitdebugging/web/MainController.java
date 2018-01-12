@@ -44,7 +44,6 @@ public class MainController {
 		return new ResponseEntity<Person>( personService.update(person), HttpStatus.OK );
 	}
 	
-	@ExceptionHandler(PersonNotFoundException.class)
 	public ResponseEntity<Person> personNotFound() {
 		return new ResponseEntity<Person>( HttpStatus.NOT_FOUND );
 	}
