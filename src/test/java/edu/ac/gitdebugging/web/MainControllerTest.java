@@ -1,15 +1,9 @@
 package edu.ac.gitdebugging.web;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.ExpectedCount.manyTimes;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
@@ -17,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,6 +49,36 @@ public class MainControllerTest {
 		
 			andExpect(status().isCreated());
 		
+	}
+	
+	@Test public void 
+	shouldCallSaveWhenPutPersonJson ()
+		throws Exception{
+		ObjectMapper mapper = new ObjectMapper();
+		
+		Person person = new Person();
+		person.setName("Jonathan");
+		
+		mockMvc.perform(put("/persons/1").content( mapper.writeValueAsString(person) ).
+			contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8) ).
+		
+			andExpect(status().isOk());
+	}
+	
+	@Test public void 
+	shouldReturnPersonWhenGetWithId ()
+		throws Exception{
+		ObjectMapper mapper = new ObjectMapper();
+		
+		Person person = new Person();
+		person.setName("Jonathan");
+		
+		mockMvc.perform(get("/persons/1").content( mapper.writeValueAsString(person) ).
+			contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8) ).
+		
+			andExpect(status().isOk()).
+			andExpect( jsonPath("$.id").isNumber() ).
+			andReturn();
 	}
 	
 }
