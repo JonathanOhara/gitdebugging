@@ -33,11 +33,17 @@ public class MainController {
 	
 	@GetMapping("/{personId}")
 	public ResponseEntity<Person> findOne(@PathVariable("personId") Long id) {
+		if( personService.findOne(id)  == null ) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		return new ResponseEntity<Person>( personService.findOne(id), HttpStatus.OK );
 	}
 	
 	@PutMapping("/{personId}")
 	public ResponseEntity<Person> update(@PathVariable("personId") Long id, @RequestBody Person person) {
+		if( personService.findOne(id)  == null ) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		person.setId(id);
 		return new ResponseEntity<Person>( personService.save(person), HttpStatus.OK );
 	}
