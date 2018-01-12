@@ -114,7 +114,9 @@ Applying to our scenario: Git search trough all commits starting in the middle c
 Let's see the following example. First, let's check our commit stack:
 
 $ git log --pretty=oneline --abbrev-commit
-f3851a1 (HEAD -> master, origin/master) Delete person service
+548cf21 (HEAD -> master, origin/master) start to write git bisect example
+f848038 bisect snippet start
+f3851a1 Delete person service
 4ed6ac5 Count persons
 a313218 Get All Persons
 7f3ce1e Adding a BUG not covered by tests
@@ -136,11 +138,20 @@ d44487f Adding spring dependencies
 As you can see, the commit that add a bug in the project is the "7f3ce1e Adding a BUG not covered by tests". Now let's run the git bisect:
 
 $ git bisect start
+
+Now we need to define the range of the search. See the following example:
+
 $ git bisect bad HEAD
 $ git bisect good e70b
 
+In the first line we define that the HEAD commit is bad, in other words, in that point we have the bug. Then we need to point a commit that the bug was not present. I often use the last commit of the last release (tags can help you).
+
+Now git will check out and old commit, like the following:
+
 Bisecting: 4 revisions left to test after this (roughly 2 steps)
 [a3132181523726cbc77caebade9e2ae096c3f04e] Get All Persons
+
+If you do a "git log" you can check exactly where the git is, you can also check some markers.
 
 $ git log --pretty=oneline --abbrev-commit
 a313218 (HEAD) Get All Persons
@@ -160,9 +171,13 @@ d44487f Adding spring dependencies
 406b281 Readme basic info
 5f1231c First commit
 
+Now we need to go to the project and verify if the bug is still there. You can use "git bisect bad" or "git bisect good" to inform git if the bug is there or not. In the example the bug still occurs. Then we inform git:
+
 $ git bisect bad
 Bisecting: 2 revisions left to test after this (roughly 1 step)
 [e64e5646a348da525b17647d3d1e0834f0e4d7bc] Refactoring exception Handler
+
+Now Git move our HEAD to a commit before the bug. Check the git log:
 
 $ git log --pretty=oneline --abbrev-commit
 e64e564 (HEAD) Refactoring exception Handler
@@ -178,6 +193,8 @@ cc66f96 Find all and save endpoints
 d44487f Adding spring dependencies
 406b281 Readme basic info
 5f1231c First commit
+
+We execute git bisect good. Now git move the HEAD to exactly where the bug is:
 
 $ git bisect good
 Bisecting: 0 revisions left to test after this (roughly 1 step)
@@ -200,6 +217,8 @@ d44487f Adding spring dependencies
 406b281 Readme basic info
 5f1231c First commit
 
+We use "git bisect bad" this time. Then Git move the HEAD one last time to verify exactly where the bug raise up.
+
 $ git bisect bad
 Bisecting: 0 revisions left to test after this (roughly 0 steps)
 [f2945f726299f5ce878595d0a1b821e6c09712fc] Bug fix in insert
@@ -220,6 +239,8 @@ d44487f Adding spring dependencies
 406b281 Readme basic info
 5f1231c First commit
 
+If you look the first git log before the bisect you will check that the commit "f2945f7" is the first commit before the BUG. Now when we inform to git that the HEAD is good, the return will be the commit that introduced the bug.
+
 $ git bisect good
 7f3ce1edcb4d3632bfe665d125004465a9d6d8e3 is the first bad commit
 commit 7f3ce1edcb4d3632bfe665d125004465a9d6d8e3
@@ -232,6 +253,61 @@ Date:   Fri Jan 12 14:40:00 2018 -0200
 
 $ git bisect reset
 
+RUN
+
+1-
+
+git checkout -b tempBranch
+git reset --hard e70b
+git rebase -i HEAD master
+
+pick fc93c46 Test to Check the BUG
+pick d07ed1e Person Exist validation
+pick e64e564 Refactoring exception Handler
+pick f2945f7 Bug fix in insert
+pick 7f3ce1e Adding a BUG not covered by tests
+pick a313218 Get All Persons
+pick 4ed6ac5 Count persons
+pick f3851a1 Delete person service
+pick f848038 bisect snippet start
+pick 548cf21 start to write git bisect example
+pick 17444c7 Removing test class
+pick 8dc8f8a bisect step by step
+pick 663f57f Removing temp file
+
+$ git log --pretty=oneline --abbrev-commit
+713de85 (HEAD -> master) Removing temp file
+fa8c371 bisect step by step
+93bc5ea Removing test class
+d57a06c start to write git bisect example
+21e3530 bisect snippet start
+51ac2ed Delete person service
+e9c521a Count persons
+59dae70 Get All Persons
+af7f157 Adding a BUG not covered by tests
+cffb531 Bug fix in insert
+8172c65 Refactoring exception Handler
+5a03476 Person Exist validation
+f7c2b72 Test to Check the BUG
+e70b341 (tempBranch) Tests for update and get
+7082948 Test base
+9a87bc9 Find One and Update
+cc66f96 Find all and save endpoints
+48476e9 Starting git bisect section
+260722e Refactoring Hello World
+62394f5 Hello World Endpoint
+06c430e Adding snippet
+d44487f Adding spring dependencies
+406b281 Readme basic info
+5f1231c First commit
+
+2 - Just create a new file and code the test. Remember to keep this new file unversioned.
+
+$ git bisect start
+
+$ git bisect bad HEAD
+$ git bisect good e70b
+
 
 Links
 
@@ -240,3 +316,4 @@ https://git-scm.com/docs/git-blame
 
 The examples are based in following repository:
 https://github.com/JonathanOhara/gitdebugging
+
