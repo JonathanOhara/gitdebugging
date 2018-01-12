@@ -107,14 +107,33 @@ First of all, why binary search? Can we just start in newest commit to the oldes
 
 Imagine that you have ten thousand of commits, and the bug is in the second commit, but never was discovered or exposed. Very often there bugs that always have been in the project (some of them since the first commit). This process will take so long to complete.
 
-The main idea of binary search is simple, given a collection of elements (e.g ordered integer array), we go the middle point of the collection, with the middle element we check if is this element that we are searching about; if not, then we need if we go to search in the group of elements right or left of the middle point. With this new groups we keep iterating this steps until we find the element.
+The main idea of binary search is simple, given a collection of elements (e.g ordered integer array), we go the middle point of the collection, with the middle element we check if this is the element that we are searching for; if not, then we need if we go to search in the group of elements right or left of the middle point. With this new groups we keep iterating this steps until we find the element.
 
 Applying to our scenario: Git search trough all commits starting in the middle commit in commits stack. With the middle commit, you need to inform Git if in this point the bug still occurs. If the bug is not present, then the git bisect create a group with the commits before (newer) that one. It continues searching until it finds the exact commit that introduced the bug.
 
 Let's see the following example. First, let's check our commit stack:
 
+$ git log --pretty=oneline --abbrev-commit
+f3851a1 (HEAD -> master, origin/master) Delete person service
+4ed6ac5 Count persons
+a313218 Get All Persons
+7f3ce1e Adding a BUG not covered by tests
+f2945f7 Bug fix in insert
+e64e564 Refactoring exception Handler
+d07ed1e Person Exist validation
+e70b341 Tests for update and get
+7082948 Test base
+9a87bc9 Find One and Update
+cc66f96 Find all and save endpoints
+48476e9 Starting git bisect section
+260722e Refactoring Hello World
+62394f5 Hello World Endpoint
+06c430e Adding snippet
+d44487f Adding spring dependencies
+406b281 Readme basic info
+5f1231c First commit
 
-
+As you can see, the commit that add a bug in the project is the "7f3ce1e Adding a BUG not covered by tests". Now let's run the git bisect:
 
 Links
 
