@@ -1,3 +1,5 @@
+https://www.linkedin.com/pulse/draft/AgFJ1Zp_r8X_jQAAAWD7Mv9mB_wmywG9VBiDAWYstw2LixdcRcvUzihrFEc8vIVQZZjK_Mk
+
 Git Debug tools (blame and bisect)
 
 Everyone knows Git as a great file versioning tool. But did you know you can also use Git to debug and to help you find bugs in your code?
@@ -6,11 +8,12 @@ In this snippet, I'll explain about two tools that helps me a lot and how I use 
 
 Git blame
 
-Git blame is a well know tool, basically, you can use to check what commit modify certain line of code. The first column is the partial commit hash followed by user, date, time, time zone, line number, line content.
+Git blame is a well known tool, basically, you can use to check what commit modify certain line of code. The first column is the partial commit hash followed by user, date, time, time zone, line number, line content.
 
 Let's start with a simple example, In the following example, the tool is used in the README.md file.
 
 $ git blame README.md
+
 406b2818 (Jonathan 2017-12-05 15:49:16 -0200 1) #Git Debugging
 406b2818 (Jonathan 2017-12-05 15:49:16 -0200 2)
 06c430e2 (Jonathan 2017-12-05 16:14:49 -0200 3) This project is part of an article made for Avenue Code Snippets.
@@ -18,252 +21,379 @@ d44487fe (Jonathan 2017-12-05 15:57:23 -0200 4)
 d44487fe (Jonathan 2017-12-05 15:57:23 -0200 5) ##Project content
 d44487fe (Jonathan 2017-12-05 15:57:23 -0200 6)
 06c430e2 (Jonathan 2017-12-05 16:14:49 -0200 7) Basic Rest based crud with Spring Boot.
-
-In code above we can check 3 different commits (406b2818, 06c430e2, d44487fe), followed by commiter data and finally the line content.
+In the code above we can check 3 different commits (406b2818, 06c430e2, d44487fe), followed by commiter data and finally the line content.
 
 There are a lot of options that you can use with git blame. You can see all git blame options in the official documentation (see section Links).
 
 One important option is [-L <range>]. With this option you can check just some lines of your file. Let's see an example:
 
 $ git blame -L 2,8 README.md
-406b2818 (Jonathan          2017-12-05 15:49:16 -0200 2)
-06c430e2 (Jonathan          2017-12-05 16:14:49 -0200 3) This project is part of an article made for Avenue Code Snippets.
-d44487fe (Jonathan          2017-12-05 15:57:23 -0200 4)
+
+406b2818 (Jonathan     2017-12-05 15:49:16 -0200 2)
+06c430e2 (Jonathan     2017-12-05 16:14:49 -0200 3) This project is part of an article made for Avenue Code Snippets.
+d44487fe (Jonathan     2017-12-05 15:57:23 -0200 4)
 00000000 (Not Committed Yet 2017-12-05 16:54:00 -0200 5) This is a unstaged change
 00000000 (Not Committed Yet 2017-12-05 16:54:00 -0200 6)
-d44487fe (Jonathan          2017-12-05 15:57:23 -0200 7) ##Project content
-d44487fe (Jonathan          2017-12-05 15:57:23 -0200 8)
-
-In the example we filter the file, starting from line 2 to line 8. Note that 'blame' also shows uncommited changes.
+d44487fe (Jonathan     2017-12-05 15:57:23 -0200 7) ##Project content
+d44487fe (Jonathan     2017-12-05 15:57:23 -0200 8)
+In the example, we filter this file from line 2 to line 8. Note that 'blame' also shows uncommited changes.
 
 Another interesting option is [-C], especially when you are refactoring a code. Summing up when you use [-C] Git try to find code blocks that was moved from another file. In this piece of code there is a simple endpoint using Java and SpringBoot.
 
 package edu.ac.gitdebugging;
 
 import org.springframework.boot.SpringApplication;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RestController;
 
+
+
 @SpringBootApplication
+
 @RestController
+
 public class App {
+
 	public static void main(String[] args) {
+
 		SpringApplication.run(App.class, args);
+
 	}
+
+
 
 	@RequestMapping("/sayHello")
-	public String sayHello() {
-		return "Hello";
-	}
-}
 
+	public String sayHello() {
+
+		return "Hello";
+
+	}
+
+}
 Then I decide to move the method sayHello to a new file called MainController, like the following code.
 
 package edu.ac.gitdebugging.web;
 
+
+
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class MainController {
-	@RequestMapping("/sayHello")
-	public String sayHello() {
-		return "Hello";
-	}
-}
 
+
+@RestController
+
+public class MainController {
+
+	@RequestMapping("/sayHello")
+
+	public String sayHello() {
+
+		return "Hello";
+
+	}
+
+}
 Now if we use blame with -C option in new class we got:
 
 $ git blame -C src/main/java/edu/ac/gitdebugging/web/MainController.java
-00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200  1) package edu.ac.gitdebugging.web;
-00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200  2)
-62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  3) import org.springframework.web.bind.annotation.RequestMapping;
-62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  4) import org.springframework.web.bind.annotation.RestController;
-62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  5)
-00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200  6) @RestController
-00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200  7) public class MainController {
-62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  8)     @RequestMapping("/sayHello")
-62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200  9)     public String sayHello() {
-62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200 10)             return "Hello";
-62394f5c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 18:20:27 -0200 11)     }
-^5f1231c src/main/java/edu/ac/gitdebugging/App.java                (Jonathan          2017-12-05 15:39:16 -0200 12) }
 
+00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200 1) package edu.ac.gitdebugging.web;
+
+00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200 2)
+
+62394f5c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 18:20:27 -0200 3) import org.springframework.web.bind.annotation.RequestMapping;
+
+62394f5c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 18:20:27 -0200 4) import org.springframework.web.bind.annotation.RestController;
+
+62394f5c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 18:20:27 -0200 5)
+
+00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200 6) @RestController
+
+00000000 src/main/java/edu/ac/gitdebugging/web/MainController.java (Not Committed Yet 2017-12-05 18:27:29 -0200 7) public class MainController {
+
+62394f5c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 18:20:27 -0200 8)   @RequestMapping("/sayHello")
+
+62394f5c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 18:20:27 -0200 9)   public String sayHello() {
+
+62394f5c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 18:20:27 -0200 10)       return "Hello";
+
+62394f5c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 18:20:27 -0200 11)   }
+
+^5f1231c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 15:39:16 -0200 12) }
 How you can see, this class is not commited yet, and we have a new column in result. The new column shows where the code originally comes from.
 
-IDEs like Eclipse and Intellij have a built-in 'blame' integrated with the code editor. In eclipse, right click in the line number and 'Show revision information'. In Intellij right click in the line number and 'Annotate'.
+IDEs like Eclipse (figure 01) and IntelliJ have a built-in 'blame' integrated with the code editor. In eclipse, right click in the line number and 'Show revision information'. In IntelliJ, right click in the line number and 'Annotate'.
 
+
+Figure 01: Blame In Eclipse
+
+
+Figure 02: Blame in IntelliJ
 
 Git bisect
 
+The first tool shows who, when and what commit make the change in the code. In the most of time you don't have idea what is breaking your code, git bisect can be used for those cases. Before giving some usage tips, let's go to the basics.
 
-The first tool shows who, when and what commit make the change in the code. In most of time you don't have idea what is breaking your code, git bisect can be used for this cases. Before givingv some usage tips, let's go to the basics.
-
-Git bisect stands for git binary search. In a nutshell, git bisect find what exactly commit introduced a bug.
+Git bisect stands for git binary search. In a nutshell, git bisect uses a binary search to find the commit that introduced a bug.
 
 Before show the example, let's get a simple review about binary search.
 
 First of all, why binary search? Can we just start in newest commit to the oldest commit?
 
-Imagine that you have ten thousand of commits, and the bug is in the second commit, but never was discovered or exposed. Very often there bugs that always have been in the project (some of them since the first commit). This process will take so long to complete.
+Imagine that you have ten thousand of commits, and the bug is in the second commit, but never was discovered or exposed. Very often there bugs that always has been in the project (some of them since the first commit). This process will take so long to complete.
 
-The main idea of binary search is simple, given a collection of elements (e.g ordered integer array), we go the middle point of the collection, with the middle element we check if this is the element that we are searching for; if not, then we need if we go to search in the group of elements right or left of the middle point. With this new groups we keep iterating this steps until we find the element.
+The main idea of binary search is simple, given a collection of elements (e.g ordered integer array), we go the middle point of the collection, with the middle element, we check if this is the element that we are searching for; if not, then we need to decide if we go to search in the group of elements right or left of the middle point. With this new smaller group we keep iterating this steps until we find the element.
+
+If you want know further about Binary Search and other search methods, check this lecture from MIT Open Courseware:
+
 
 Applying to our scenario: Git search trough all commits starting in the middle commit in commits stack. With the middle commit, you need to inform Git if in this point the bug still occurs. If the bug is not present, then the git bisect create a group with the commits before (newer) that one. It continues searching until it finds the exact commit that introduced the bug.
 
 Let's see the following example. First, let's check our commit stack:
 
 $ git log --pretty=oneline --abbrev-commit
-548cf21 (HEAD -> master, origin/master) start to write git bisect example
-f848038 bisect snippet start
-f3851a1 Delete person service
-4ed6ac5 Count persons
-a313218 Get All Persons
-7f3ce1e Adding a BUG not covered by tests
-f2945f7 Bug fix in insert
-e64e564 Refactoring exception Handler
-d07ed1e Person Exist validation
-e70b341 Tests for update and get
-7082948 Test base
-9a87bc9 Find One and Update
-cc66f96 Find all and save endpoints
-48476e9 Starting git bisect section
-260722e Refactoring Hello World
-62394f5 Hello World Endpoint
-06c430e Adding snippet
-d44487f Adding spring dependencies
-406b281 Readme basic info
-5f1231c First commit
 
+548cf21 (HEAD -> master, origin/master) start to write git bisect example
+
+f848038 bisect snippet start
+
+f3851a1 Delete person service
+
+4ed6ac5 Count persons
+
+a313218 Get All Persons
+
+7f3ce1e Adding a BUG not covered by tests
+
+f2945f7 Bug fix in insert
+
+e64e564 Refactoring exception Handler
+
+d07ed1e Person Exist validation
+
+e70b341 Tests for update and get
+
+7082948 Test base
+
+9a87bc9 Find One and Update
+
+cc66f96 Find all and save endpoints
+
+48476e9 Starting git bisect section
+
+260722e Refactoring Hello World
+
+62394f5 Hello World Endpoint
+
+06c430e Adding snippet
+
+d44487f Adding spring dependencies
+
+406b281 Readme basic info
+
+5f1231c First commit
 As you can see, the commit that add a bug in the project is the "7f3ce1e Adding a BUG not covered by tests". Now let's run the git bisect:
 
 $ git bisect start
-
 Now we need to define the range of the search. See the following example:
 
 $ git bisect bad HEAD
-$ git bisect good e70b
 
+$ git bisect good e70b
 In the first line we define that the HEAD commit is bad, in other words, in that point we have the bug. Then we need to point a commit that the bug was not present. I often use the last commit of the last release (tags can help you).
 
 Now git will check out and old commit, like the following:
 
 Bisecting: 4 revisions left to test after this (roughly 2 steps)
-[a3132181523726cbc77caebade9e2ae096c3f04e] Get All Persons
 
+[a3132181523726cbc77caebade9e2ae096c3f04e] Get All Persons
 If you do a "git log" you can check exactly where the git is, you can also check some markers.
 
 $ git log --pretty=oneline --abbrev-commit
-a313218 (HEAD) Get All Persons
-7f3ce1e Adding a BUG not covered by tests
-f2945f7 Bug fix in insert
-e64e564 Refactoring exception Handler
-d07ed1e Person Exist validation
-e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
-7082948 Test base
-9a87bc9 Find One and Update
-cc66f96 Find all and save endpoints
-48476e9 Starting git bisect section
-260722e Refactoring Hello World
-62394f5 Hello World Endpoint
-06c430e Adding snippet
-d44487f Adding spring dependencies
-406b281 Readme basic info
-5f1231c First commit
 
+a313218 (HEAD) Get All Persons
+
+7f3ce1e Adding a BUG not covered by tests
+
+f2945f7 Bug fix in insert
+
+e64e564 Refactoring exception Handler
+
+d07ed1e Person Exist validation
+
+e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
+
+7082948 Test base
+
+9a87bc9 Find One and Update
+
+cc66f96 Find all and save endpoints
+
+48476e9 Starting git bisect section
+
+260722e Refactoring Hello World
+
+62394f5 Hello World Endpoint
+
+06c430e Adding snippet
+
+d44487f Adding spring dependencies
+
+406b281 Readme basic info
+
+5f1231c First commit
 Now we need to go to the project and verify if the bug is still there. You can use "git bisect bad" or "git bisect good" to inform git if the bug is there or not. In the example the bug still occurs. Then we inform git:
 
 $ git bisect bad
-Bisecting: 2 revisions left to test after this (roughly 1 step)
-[e64e5646a348da525b17647d3d1e0834f0e4d7bc] Refactoring exception Handler
 
+Bisecting: 2 revisions left to test after this (roughly 1 step)
+
+[e64e5646a348da525b17647d3d1e0834f0e4d7bc] Refactoring exception Handler
 Now Git move our HEAD to a commit before the bug. Check the git log:
 
 $ git log --pretty=oneline --abbrev-commit
-e64e564 (HEAD) Refactoring exception Handler
-d07ed1e Person Exist validation
-e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
-7082948 Test base
-9a87bc9 Find One and Update
-cc66f96 Find all and save endpoints
-48476e9 Starting git bisect section
-260722e Refactoring Hello World
-62394f5 Hello World Endpoint
-06c430e Adding snippet
-d44487f Adding spring dependencies
-406b281 Readme basic info
-5f1231c First commit
 
+e64e564 (HEAD) Refactoring exception Handler
+
+d07ed1e Person Exist validation
+
+e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
+
+7082948 Test base
+
+9a87bc9 Find One and Update
+
+cc66f96 Find all and save endpoints
+
+48476e9 Starting git bisect section
+
+260722e Refactoring Hello World
+
+62394f5 Hello World Endpoint
+
+06c430e Adding snippet
+
+d44487f Adding spring dependencies
+
+406b281 Readme basic info
+
+5f1231c First commit
 We execute git bisect good. Now git move the HEAD to exactly where the bug is:
 
 $ git bisect good
+
 Bisecting: 0 revisions left to test after this (roughly 1 step)
+
 [7f3ce1edcb4d3632bfe665d125004465a9d6d8e3] Adding a BUG not covered by tests
 
-$ git log --pretty=oneline --abbrev-commit
-7f3ce1e (HEAD) Adding a BUG not covered by tests
-f2945f7 Bug fix in insert
-e64e564 (refs/bisect/good-e64e5646a348da525b17647d3d1e0834f0e4d7bc) Refactoring exception Handler
-d07ed1e Person Exist validation
-e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
-7082948 Test base
-9a87bc9 Find One and Update
-cc66f96 Find all and save endpoints
-48476e9 Starting git bisect section
-260722e Refactoring Hello World
-62394f5 Hello World Endpoint
-06c430e Adding snippet
-d44487f Adding spring dependencies
-406b281 Readme basic info
-5f1231c First commit
 
-We use "git bisect bad" this time. Then Git move the HEAD one last time to verify exactly where the bug raise up.
+$ git log --pretty=oneline --abbrev-commit
+
+7f3ce1e (HEAD) Adding a BUG not covered by tests
+
+f2945f7 Bug fix in insert
+
+e64e564 (refs/bisect/good-e64e5646a348da525b17647d3d1e0834f0e4d7bc) Refactoring exception Handler
+
+d07ed1e Person Exist validation
+
+e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
+
+7082948 Test base
+
+9a87bc9 Find One and Update
+
+cc66f96 Find all and save endpoints
+
+48476e9 Starting git bisect section
+
+260722e Refactoring Hello World
+
+62394f5 Hello World Endpoint
+
+06c430e Adding snippet
+
+d44487f Adding spring dependencies
+
+406b281 Readme basic info
+
+5f1231c First commit
+We use "git bisect bad" this time. Then Git move the HEAD one last time to verify exactly where the bug arose.
 
 $ git bisect bad
+
 Bisecting: 0 revisions left to test after this (roughly 0 steps)
+
 [f2945f726299f5ce878595d0a1b821e6c09712fc] Bug fix in insert
 
-$ git log --pretty=oneline --abbrev-commit
-f2945f7 (HEAD) Bug fix in insert
-e64e564 (refs/bisect/good-e64e5646a348da525b17647d3d1e0834f0e4d7bc) Refactoring exception Handler
-d07ed1e Person Exist validation
-e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
-7082948 Test base
-9a87bc9 Find One and Update
-cc66f96 Find all and save endpoints
-48476e9 Starting git bisect section
-260722e Refactoring Hello World
-62394f5 Hello World Endpoint
-06c430e Adding snippet
-d44487f Adding spring dependencies
-406b281 Readme basic info
-5f1231c First commit
 
+
+$ git log --pretty=oneline --abbrev-commit
+
+f2945f7 (HEAD) Bug fix in insert
+
+e64e564 (refs/bisect/good-e64e5646a348da525b17647d3d1e0834f0e4d7bc) Refactoring exception Handler
+
+d07ed1e Person Exist validation
+
+e70b341 (refs/bisect/good-e70b3416e262f4947de25d6e324c45ea301078a8) Tests for update and get
+
+7082948 Test base
+
+9a87bc9 Find One and Update
+
+cc66f96 Find all and save endpoints
+
+48476e9 Starting git bisect section
+
+260722e Refactoring Hello World
+
+62394f5 Hello World Endpoint
+
+06c430e Adding snippet
+
+d44487f Adding spring dependencies
+
+406b281 Readme basic info
+
+5f1231c First commit
 If you look the first git log before the bisect you will check that the commit "f2945f7" is the first commit before the BUG. Now when we inform to git that the HEAD is good, the return will be the commit that introduced the bug.
 
 $ git bisect good
-7f3ce1edcb4d3632bfe665d125004465a9d6d8e3 is the first bad commit
-commit 7f3ce1edcb4d3632bfe665d125004465a9d6d8e3
-Author: Jonathan <jaraujo@avenuecode.com>
-Date:   Fri Jan 12 14:40:00 2018 -0200
 
-    Adding a BUG not covered by tests
+7f3ce1edcb4d3632bfe665d125004465a9d6d8e3 is the first bad commit
+
+commit 7f3ce1edcb4d3632bfe665d125004465a9d6d8e3
+
+Author: Jonathan <jaraujo@avenuecode.com>
+
+Date:  Fri Jan 12 14:40:00 2018 -0200
+
+
+
+  Adding a BUG not covered by tests
+
+
 
 :040000 040000 0f61c1015071199f167b1ddaee632f2368c9b99b b0e10337999203236d17756897a7f8fe071d3237 M	src
-
 To leave bisect mode we just do:
 
 $ git bisect reset
-
 Bisect with automated tests
 
 The "git bisect" command accepts a "run" argument, with this command we can use a script to define if is "good" or "bad". The basic command is:
 
-git bisect run <cmd>
-
+$ git bisect run <cmd>
 Now the bisect can be executed easier and faster, with the run command we can use maven to generate run results.
 
-There is only one thing that we need to setting up before running bisect with maven. To use maven we need a broken test to check if the bug is present. You can't just create a commit in the top of stack because git bisect remove the commits to find the bug.
+There is only one thing that we need to setting up before running bisect with maven. To use maven we need a broken test to check if the bug is present. You can't just create a commit in the top of the stack because git bisect remove the commits to find the bug.
 
 I will show the two ways that I usually do.
 
@@ -271,96 +401,136 @@ I will show the two ways that I usually do.
 
 First we create a new branch "tempBranch":
 
-git checkout -b tempBranch
-
+$ git checkout -b tempBranch
 Then we reset the branch to a past point:
 
-git reset --hard e70b
-
+$ git reset --hard e70b
 Then we use the interactive rebase to change the commits order:
 
-git rebase -i HEAD master
-
+$ git rebese -i HEAD master
 Make sure that you move the new commit to the first commit in the interactive rebase. Like the following:
 
 pick fc93c46 Test to Check the BUG
-pick d07ed1e Person Exist validation
-pick e64e564 Refactoring exception Handler
-pick f2945f7 Bug fix in insert
-pick 7f3ce1e Adding a BUG not covered by tests
-pick a313218 Get All Persons
-pick 4ed6ac5 Count persons
-pick f3851a1 Delete person service
-pick f848038 bisect snippet start
-pick 548cf21 start to write git bisect example
-pick 17444c7 Removing test class
-pick 8dc8f8a bisect step by step
-pick 663f57f Removing temp file
 
+pick d07ed1e Person Exist validation
+
+pick e64e564 Refactoring exception Handler
+
+pick f2945f7 Bug fix in insert
+
+pick 7f3ce1e Adding a BUG not covered by tests
+
+pick a313218 Get All Persons
+
+pick 4ed6ac5 Count persons
+
+pick f3851a1 Delete person service
+
+pick f848038 bisect snippet start
+
+pick 548cf21 start to write git bisect example
+
+pick 17444c7 Removing test class
+
+pick 8dc8f8a bisect step by step
+
+pick 663f57f Removing temp file
 Check that the commit "fc93c46 Test to Check the BUG" is right after "e70b341 Tests for update and get".
 
 $ git log --pretty=oneline --abbrev-commit
-713de85 (HEAD -> master) Removing temp file
-fa8c371 bisect step by step
-93bc5ea Removing test class
-d57a06c start to write git bisect example
-21e3530 bisect snippet start
-51ac2ed Delete person service
-e9c521a Count persons
-59dae70 Get All Persons
-af7f157 Adding a BUG not covered by tests
-cffb531 Bug fix in insert
-8172c65 Refactoring exception Handler
-5a03476 Person Exist validation
-f7c2b72 Test to Check the BUG
-e70b341 (tempBranch) Tests for update and get
-7082948 Test base
-9a87bc9 Find One and Update
-cc66f96 Find all and save endpoints
-48476e9 Starting git bisect section
-260722e Refactoring Hello World
-62394f5 Hello World Endpoint
-06c430e Adding snippet
-d44487f Adding spring dependencies
-406b281 Readme basic info
-5f1231c First commit
 
-2 - Just create a new file and code the test. Remember to keep this new file unversioned. This way is faster, but you can have a conflicting name or you can loose your new test file depending in what you do after the bisect.
+713de85 (HEAD -> master) Removing temp file
+
+fa8c371 bisect step by step
+
+93bc5ea Removing test class
+
+d57a06c start to write git bisect example
+
+21e3530 bisect snippet start
+
+51ac2ed Delete person service
+
+e9c521a Count persons
+
+59dae70 Get All Persons
+
+af7f157 Adding a BUG not covered by tests
+
+cffb531 Bug fix in insert
+
+8172c65 Refactoring exception Handler
+
+5a03476 Person Exist validation
+
+f7c2b72 Test to Check the BUG
+
+e70b341 (tempBranch) Tests for update and get
+
+7082948 Test base
+
+9a87bc9 Find One and Update
+
+cc66f96 Find all and save endpoints
+
+48476e9 Starting git bisect section
+
+260722e Refactoring Hello World
+
+62394f5 Hello World Endpoint
+
+06c430e Adding snippet
+
+d44487f Adding spring dependencies
+
+406b281 Readme basic info
+
+5f1231c First commit
+2 - We can just create a new file and code the test and keep this new file unversioned. This way is faster, but you can have a conflicting name or you can loose your new test file depending in what you do after the bisect.
 
 Now that we create a test that shows to git if is the project is "good" or "bad". Let's use maven to make all step for us:
 
 $ git bisect start
 
 $ git bisect bad HEAD
+
 $ git bisect good e70b
 
 $ git bisect run mvn -Dtest=BugFinderTest test
-7f3ce1edcb4d3632bfe665d125004465a9d6d8e3 is the first bad commit
-commit 7f3ce1edcb4d3632bfe665d125004465a9d6d8e3
-Author: Jonathan <jaraujo@avenuecode.com>
-Date:   Fri Jan 12 14:40:00 2018 -0200
+Now you just need to wait for maven do all the process by their own.
 
-    Adding a BUG not covered by tests
+$ git bisect run mvn -Dtest=BugFinderTest test
+
+7f3ce1edcb4d3632bfe665d125004465a9d6d8e3 is the first bad commit
+
+commit 7f3ce1edcb4d3632bfe665d125004465a9d6d8e3
+
+Author: Jonathan <jaraujo@avenuecode.com>
+
+Date:  Fri Jan 12 14:40:00 2018 -0200
+
+
+
+  Adding a BUG not covered by tests
+
+
 
 :040000 040000 0f61c1015071199f167b1ddaee632f2368c9b99b b0e10337999203236d17756897a7f8fe071d3237 M	src
+
 bisect run success
+You can check all the running log (step by step) in the following video:
 
 
-package edu.ac.gitdebugging.web;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+That's all, in this snippet I present two important Git tools (blame and bisect) in my daily programming and some tips to better usage of them. 
 
-You can check all the running log in the following video:
-https://www.youtube.com/watch?v=wIZQlopUk_k&t=3s
-
-Links
+Reference
 
 Git Blame Docs:
-https://git-scm.com/docs/git-blame
+
 
 Git Bisect Docs:
-https://git-scm.com/docs/git-bisect
+
 
 All examples are based in following repository:
-https://github.com/JonathanOhara/gitdebugging
+
 
