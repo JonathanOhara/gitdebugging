@@ -1,4 +1,4 @@
-Git Debug tools
+Git Debug tools (blame and bisect)
 
 Everyone knows Git as a great file versioning tool. But did you know you can also use Git to debug and to help you find bugs in your code?
 
@@ -251,15 +251,37 @@ Date:   Fri Jan 12 14:40:00 2018 -0200
 
 :040000 040000 0f61c1015071199f167b1ddaee632f2368c9b99b b0e10337999203236d17756897a7f8fe071d3237 M	src
 
+To leave bisect mode we just do:
+
 $ git bisect reset
 
-RUN
+Bisect with automated tests
 
-1-
+The "git bisect" command accepts a "run" argument, with this command we can use a script to define if is "good" or "bad". The basic command is:
+
+git bisect run <cmd>
+
+Now the bisect can be executed easier and faster, with the run command we can use maven to generate run results.
+
+There is only one thing that we need to setting up before running bisect with maven. To use maven we need a broken test to check if the bug is present. You can't just create a commit in the top of stack because git bisect remove the commits to find the bug.
+
+I will show the two ways that I usually do.
+
+1 - Create the test; commit the test; create an auxiliary branch; reset the auxiliary branch to a past point (usually to the commit where you will use bisect good); then we rebase our source branch with this new branch changing the commit order then our new test will be the first commit. Let's see step by step:
+
+First we create a new branch "tempBranch":
 
 git checkout -b tempBranch
+
+Then we reset the branch to a past point:
+
 git reset --hard e70b
+
+Then we use the interactive rebase to change the commits order:
+
 git rebase -i HEAD master
+
+Make sure that you move the new commit to the first commit in the interactive rebase. Like the following:
 
 pick fc93c46 Test to Check the BUG
 pick d07ed1e Person Exist validation
@@ -274,6 +296,8 @@ pick 548cf21 start to write git bisect example
 pick 17444c7 Removing test class
 pick 8dc8f8a bisect step by step
 pick 663f57f Removing temp file
+
+Check that the commit "fc93c46 Test to Check the BUG" is right after "e70b341 Tests for update and get".
 
 $ git log --pretty=oneline --abbrev-commit
 713de85 (HEAD -> master) Removing temp file
@@ -301,7 +325,9 @@ d44487f Adding spring dependencies
 406b281 Readme basic info
 5f1231c First commit
 
-2 - Just create a new file and code the test. Remember to keep this new file unversioned.
+2 - Just create a new file and code the test. Remember to keep this new file unversioned. This way is faster, but you can have a conflicting name or you can loose your new test file depending in what you do after the bisect.
+
+Now that we create a test that shows to git if is the project is "good" or "bad". Let's use maven to make all step for us:
 
 $ git bisect start
 
@@ -309,55 +335,32 @@ $ git bisect bad HEAD
 $ git bisect good e70b
 
 $ git bisect run mvn -Dtest=BugFinderTest test
+7f3ce1edcb4d3632bfe665d125004465a9d6d8e3 is the first bad commit
+commit 7f3ce1edcb4d3632bfe665d125004465a9d6d8e3
+Author: Jonathan <jaraujo@avenuecode.com>
+Date:   Fri Jan 12 14:40:00 2018 -0200
 
+    Adding a BUG not covered by tests
+
+:040000 040000 0f61c1015071199f167b1ddaee632f2368c9b99b b0e10337999203236d17756897a7f8fe071d3237 M	src
+bisect run success
 
 
 package edu.ac.gitdebugging.web;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
-@WebAppConfiguration
-public class BugFinderTest {
-	@Autowired
-	private WebApplicationContext context;
-	
-	private MockMvc mockMvc;
-	
-	@Before
-	public void setup() throws Exception{
-		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-				.build();
-	}
-	
-	@Test public void 
-	shouldDeletePersonWhenDelete ()
-		throws Exception{
-		mockMvc.perform(get("/persons/3")).
-			andExpect(status().isNotFound()).
-			andReturn();
-	}
-	
-}
-
+You can check all the running log in the following video:
+https://www.youtube.com/watch?v=wIZQlopUk_k&t=3s
 
 Links
 
-Git Blame:
+Git Blame Docs:
 https://git-scm.com/docs/git-blame
 
-The examples are based in following repository:
+Git Bisect Docs:
+https://git-scm.com/docs/git-bisect
+
+All examples are based in following repository:
 https://github.com/JonathanOhara/gitdebugging
 
