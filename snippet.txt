@@ -1,3 +1,5 @@
+https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-00-introduction-to-computer-science-and-programming-fall-2008/video-lectures/lecture-9/
+https://youtu.be/wIZQlopUk_k
 https://www.linkedin.com/pulse/draft/AgFJ1Zp_r8X_jQAAAWD7Mv9mB_wmywG9VBiDAWYstw2LixdcRcvUzihrFEc8vIVQZZjK_Mk
 
 Git Debug tools (blame and bisect)
@@ -8,7 +10,7 @@ In this snippet, I'll explain about two tools that helps me a lot and how I use 
 
 Git blame
 
-Git blame is a well known tool, basically, you can use to check what commit modify certain line of code. The first column is the partial commit hash followed by user, date, time, time zone, line number, line content.
+Git blame is a well-known tool, basically, you can use to check what commit modify certain line of code. In the result of 'git blame' the first column is the partial commit hash followed by user, date, time, time zone, line number, line content.
 
 Let's start with a simple example, In the following example, the tool is used in the README.md file.
 
@@ -21,7 +23,7 @@ d44487fe (Jonathan 2017-12-05 15:57:23 -0200 4)
 d44487fe (Jonathan 2017-12-05 15:57:23 -0200 5) ##Project content
 d44487fe (Jonathan 2017-12-05 15:57:23 -0200 6)
 06c430e2 (Jonathan 2017-12-05 16:14:49 -0200 7) Basic Rest based crud with Spring Boot.
-In the code above we can check 3 different commits (406b2818, 06c430e2, d44487fe), followed by commiter data and finally the line content.
+In the code above we can check 3 commits (406b2818, 06c430e2, d44487fe), followed by committer data and finally the line content.
 
 There are a lot of options that you can use with git blame. You can see all git blame options in the official documentation (see section Links).
 
@@ -36,9 +38,9 @@ d44487fe (Jonathan     2017-12-05 15:57:23 -0200 4)
 00000000 (Not Committed Yet 2017-12-05 16:54:00 -0200 6)
 d44487fe (Jonathan     2017-12-05 15:57:23 -0200 7) ##Project content
 d44487fe (Jonathan     2017-12-05 15:57:23 -0200 8)
-In the example, we filter this file from line 2 to line 8. Note that 'blame' also shows uncommited changes.
+In the example, we filter this file from line 2 to line 8. Note that 'blame' also shows uncommitted changes.
 
-Another interesting option is [-C], especially when you are refactoring a code. Summing up when you use [-C] Git try to find code blocks that was moved from another file. In this piece of code there is a simple endpoint using Java and SpringBoot.
+Another interesting option is [-C], especially when you are refactoring a code. Summing up when you use [-C] Git try to find code blocks that was moved from another file. In this piece of code, there is a simple endpoint using Java and SpringBoot.
 
 package edu.ac.gitdebugging;
 
@@ -127,7 +129,7 @@ $ git blame -C src/main/java/edu/ac/gitdebugging/web/MainController.java
 62394f5c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 18:20:27 -0200 11)   }
 
 ^5f1231c src/main/java/edu/ac/gitdebugging/App.java        (Jonathan     2017-12-05 15:39:16 -0200 12) }
-How you can see, this class is not commited yet, and we have a new column in result. The new column shows where the code originally comes from.
+How you can see, this class is not committed yet, and we have a new column in result. The new column shows where the code originally comes from.
 
 IDEs like Eclipse (figure 01) and IntelliJ have a built-in 'blame' integrated with the code editor. In eclipse, right click in the line number and 'Show revision information'. In IntelliJ, right click in the line number and 'Annotate'.
 
@@ -139,7 +141,7 @@ Figure 02: Blame in IntelliJ
 
 Git bisect
 
-The first tool shows who, when and what commit make the change in the code. In the most of time you don't have idea what is breaking your code, git bisect can be used for those cases. Before giving some usage tips, let's go to the basics.
+The first tool shows who, when and what commit makes the change in the code. In the most of time you don't have idea what is breaking your code, git bisect can be used for those cases. Before giving some usage tips, let's go to the basics.
 
 Git bisect stands for git binary search. In a nutshell, git bisect uses a binary search to find the commit that introduced a bug.
 
@@ -149,7 +151,7 @@ First of all, why binary search? Can we just start in newest commit to the oldes
 
 Imagine that you have ten thousand of commits, and the bug is in the second commit, but never was discovered or exposed. Very often there bugs that always has been in the project (some of them since the first commit). This process will take so long to complete.
 
-The main idea of binary search is simple, given a collection of elements (e.g ordered integer array), we go the middle point of the collection, with the middle element, we check if this is the element that we are searching for; if not, then we need to decide if we go to search in the group of elements right or left of the middle point. With this new smaller group we keep iterating this steps until we find the element.
+The main idea of binary search is simple, given a collection of elements (e.g. ordered integer array), we go the middle point of the collection, with the middle element, we check if this is the element that we are searching for; if not, then we need to decide if we go to search in the group of elements right or left of the middle point. With this new smaller group, we keep iterating these steps until we find the element.
 
 If you want know further about Binary Search and other search methods, check this lecture from MIT Open Courseware:
 
@@ -209,7 +211,7 @@ $ git bisect bad HEAD
 $ git bisect good e70b
 In the first line we define that the HEAD commit is bad, in other words, in that point we have the bug. Then we need to point a commit that the bug was not present. I often use the last commit of the last release (tags can help you).
 
-Now git will check out and old commit, like the following:
+Now Git will check out and old commit, like the following:
 
 Bisecting: 4 revisions left to test after this (roughly 2 steps)
 
@@ -249,7 +251,7 @@ d44487f Adding spring dependencies
 406b281 Readme basic info
 
 5f1231c First commit
-Now we need to go to the project and verify if the bug is still there. You can use "git bisect bad" or "git bisect good" to inform git if the bug is there or not. In the example the bug still occurs. Then we inform git:
+Now we need to go to the project and verify if the bug is still there. You can use "git bisect bad" or "git bisect good" to inform git if the bug is there or not. In the example the bug still occurs. Then we inform Git:
 
 $ git bisect bad
 
@@ -292,7 +294,7 @@ $ git bisect good
 Bisecting: 0 revisions left to test after this (roughly 1 step)
 
 [7f3ce1edcb4d3632bfe665d125004465a9d6d8e3] Adding a BUG not covered by tests
-
+Checking the log, we got:
 
 $ git log --pretty=oneline --abbrev-commit
 
@@ -333,7 +335,7 @@ Bisecting: 0 revisions left to test after this (roughly 0 steps)
 
 [f2945f726299f5ce878595d0a1b821e6c09712fc] Bug fix in insert
 
-
+Once more the log:
 
 $ git log --pretty=oneline --abbrev-commit
 
@@ -364,7 +366,7 @@ d44487f Adding spring dependencies
 406b281 Readme basic info
 
 5f1231c First commit
-If you look the first git log before the bisect you will check that the commit "f2945f7" is the first commit before the BUG. Now when we inform to git that the HEAD is good, the return will be the commit that introduced the bug.
+If you look the first git log before the bisect, you will check that the commit "f2945f7" is the first commit before the BUG. Now when we inform to git that the HEAD is good, the return will be the commit that introduced the bug.
 
 $ git bisect good
 
@@ -391,9 +393,9 @@ Bisect with automated tests
 The "git bisect" command accepts a "run" argument, with this command we can use a script to define if is "good" or "bad". The basic command is:
 
 $ git bisect run <cmd>
-Now the bisect can be executed easier and faster, with the run command we can use maven to generate run results.
+Now the bisect can be executed easier and faster, with the run command we can use Maven to generate run results.
 
-There is only one thing that we need to setting up before running bisect with maven. To use maven we need a broken test to check if the bug is present. You can't just create a commit in the top of the stack because git bisect remove the commits to find the bug.
+There is only one thing that we need to setting up before running bisect with Maven. To use Maven we need a broken test to check if the bug is present. You can't just create a commit in the top of the stack because git bisect removes the commits to find the bug.
 
 I will show the two ways that I usually do.
 
@@ -486,9 +488,9 @@ d44487f Adding spring dependencies
 406b281 Readme basic info
 
 5f1231c First commit
-2 - We can just create a new file and code the test and keep this new file unversioned. This way is faster, but you can have a conflicting name or you can loose your new test file depending in what you do after the bisect.
+2 - We can just create a new file and code the test and keep this new file unversioned. This way is faster, but you can have a conflicting name or you can loose your new test file depending on what you do after the bisect.
 
-Now that we create a test that shows to git if is the project is "good" or "bad". Let's use maven to make all step for us:
+Now that we create a test that shows to git if is the project is "good" or "bad". Let's use Maven to make all step for us:
 
 $ git bisect start
 
@@ -497,7 +499,7 @@ $ git bisect bad HEAD
 $ git bisect good e70b
 
 $ git bisect run mvn -Dtest=BugFinderTest test
-Now you just need to wait for maven do all the process by their own.
+Now you just need to wait for Maven do all the process by their own.
 
 $ git bisect run mvn -Dtest=BugFinderTest test
 
